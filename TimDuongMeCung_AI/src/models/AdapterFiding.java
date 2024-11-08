@@ -1,9 +1,13 @@
 package models;
 
-public class AdapterFiding implements IAlogrithm{
+public class AdapterFiding implements IAlogrithm {
 	private IAlogrithm alogrithm;
 
-    public Point[] execute() {
-        return alogrithm.execute();
-    }
+	public AdapterFiding(IAlogrithm alogrithm) {
+		this.alogrithm = alogrithm;
+	}
+
+	public Point[] execute() {
+		return alogrithm.execute();
+	}
 }

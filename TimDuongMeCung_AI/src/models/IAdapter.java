@@ -6,5 +6,5 @@ public interface IAdapter {
 	 * 
 	 * @return Kết quả giải thuật
 	 */
-	Point[] excute();
+	Point[] execute();
 }

@@ -9,12 +9,4 @@ public class RecursiveMatrix implements IAlogrithm{
 		return new Point[0];// Trả về mảng Point rỗng, chưa triển khai
 	}
 
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
 }

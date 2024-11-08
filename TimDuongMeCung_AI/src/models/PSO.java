@@ -1,11 +1,10 @@
 package models;
 
-public class PSO implements IAlogrithm{
-	//private String field;
-	
+public class PSO implements IAlogrithm {
+
 	@Override
 	public Point[] execute() {
-		// TODO Auto-generated method stub
+		// Triển khai thuật toán PSO ở đây
 		return new Point[0];
 	}
 
