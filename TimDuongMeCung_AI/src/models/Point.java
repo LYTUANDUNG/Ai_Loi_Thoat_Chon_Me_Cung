@@ -14,7 +14,7 @@ public class Point {
 		super();
 		this.x = x;
 		this.y = y;
-		this.state = StatePoint.Entrance;
+		this.state = state;
 	}
 
 	public int getX() {
