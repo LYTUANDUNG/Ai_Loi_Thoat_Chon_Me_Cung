@@ -8,8 +8,8 @@ public class Matrix {
 	 * Phương thức trả về ma trận dưới dạng mảng các điểm (Point) Thực hiện thông
 	 * qua adapter 'creating'
 	 */
-	public Point[] getMatrix() {
-		return creating.execute();
+	public Point[] getMatrix(Point[] points) {
+		return creating.execute(points);
 	}
 
 }

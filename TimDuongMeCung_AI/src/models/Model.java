@@ -8,10 +8,14 @@ public class Model implements IModel {
 	private Point[] points;
 	private ShortestPath path;
 
+	public Model() {
+		matrix= new Matrix();
+		path= new ShortestPath();
+	}
 	@Override
 	public Point[] getMatrix() {
 		/* Trả về ma trận dưới dạng mảng các điểm (Point) */
-		points = matrix.getMatrix();
+		points = matrix.getMatrix(null);
 		return points;
 
 	}
@@ -19,6 +23,11 @@ public class Model implements IModel {
 	@Override
 	public Point[] getPath() {
 		/* Trả về đường đi ngắn nhất dưới dạng mảng các điểm (Point) */
-		return path.getPath();
+		return path.getPath(points);
+	}
+
+	public void setAL(IAlogrithm al) {
+		path.setAL(al);
+		
 	}
 }

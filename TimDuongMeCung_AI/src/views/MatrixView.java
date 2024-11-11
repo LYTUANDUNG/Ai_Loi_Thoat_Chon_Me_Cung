@@ -36,18 +36,15 @@ public class MatrixView extends JPanel {
 					g.setColor(Color.WHITE);
 					break;
 				case Passage:
-					g.setColor(Color.GREEN);
+					g.setColor(Color.GRAY);
 					break;
 				case Exit:
 					g.setColor(Color.RED);
 					break;
-				default:
-					g.setColor(Color.LIGHT_GRAY);
-					break;
 				}
 
 				// Vẽ hình vuông 20x20 đại diện cho mỗi điểm
-				g.fillRect(x * 20, y * 20, 20, 20); 
+				g.fillRect(x * 20, y * 20, 20, 20);
 			}
 		}
 	}

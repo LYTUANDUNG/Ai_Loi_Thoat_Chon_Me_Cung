@@ -3,6 +3,8 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+
 import models.Point;
 
 import javax.swing.JFrame;
@@ -11,13 +13,35 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class View {
+public class View implements IView {
 	private MapView mapView;
 	private ToolView toolView;
 
-	public View(MapView mapView, ToolView toolView) {
-		this.mapView = mapView;
-		this.toolView = toolView;
+	public View() {
+		this.mapView = new MapView();
+		this.toolView = new ToolView();
+	}
+
+	/**
+	 * Sự kiện nút vẽ đường đi
+	 * 
+	 * @param event sự kiện cho button
+	 */
+	public void addEventFinding(ActionListener event) {
+		toolView.addEventFinding(event);
+	}
+
+	/**
+	 * Sự kiện nút vẽ mê cung
+	 * 
+	 * @param event sự kiện cho button
+	 */
+	public void addEventCreateMatrix(ActionListener event) {
+		toolView.addEventCreateMatrix(event);
+	}
+
+	public void addEventChangeAL(ActionListener event) {
+		toolView.addEventChangeAL(event);
 	}
 
 	// Phương thức để tạo ma trận
@@ -64,18 +88,9 @@ public class View {
 		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới
 
 		// Hiển thị cửa sổ
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
-	// Test
-	public static void main(String[] args) {
-		MatrixView matrixView = new MatrixView();
-		RoadView roadView = new RoadView();
-		MapView mapView = new MapView(matrixView, roadView);
-		ToolView toolView = new ToolView();
 
-		// Tạo View và hiển thị GUI
-		View view = new View(mapView, toolView);
-		view.createGUI();
-	}
 }

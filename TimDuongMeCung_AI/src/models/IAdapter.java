@@ -6,5 +6,6 @@ public interface IAdapter {
 	 * 
 	 * @return Kết quả giải thuật
 	 */
-	Point[] execute();
+	Point[] execute(Point[] points);
+	 void setAlogrithm(IAlogrithm alogrithm);
 }

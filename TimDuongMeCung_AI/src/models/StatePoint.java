@@ -1,4 +1,4 @@
-package data;
+package models;
 
 /**
  * Trạng thái của một ô trong mê cung.

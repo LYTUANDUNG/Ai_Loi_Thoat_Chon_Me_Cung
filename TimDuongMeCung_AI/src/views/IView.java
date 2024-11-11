@@ -18,5 +18,7 @@ public interface IView {
 	 *               text
 	 */
 	void displayResult(Point[] points, boolean b);
+	
+	void createGUI();
 
 }

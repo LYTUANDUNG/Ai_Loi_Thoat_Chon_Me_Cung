@@ -6,5 +6,5 @@ public interface IAlogrithm {
 	 * 
 	 * @return Kết quả giải thuật
 	 */
-	Point[] execute();
+	Point[] execute(Point[] points);
 }

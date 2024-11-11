@@ -1,7 +1,11 @@
 package views;
 
 import javax.swing.*;
+
+import models.IAlogrithm;
+
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class ToolView extends JPanel {
     private JButton[] buttons;
@@ -22,4 +26,18 @@ public class ToolView extends JPanel {
             add(buttons[i]);
         }
     }
+
+	public void addEventFinding(ActionListener event) {
+		buttons[buttons.length-1].addActionListener(event);
+	}
+
+	public void addEventCreateMatrix(ActionListener event) {
+		buttons[0].addActionListener(event);
+	}
+
+	public void addEventChangeAL(ActionListener event) {
+		for (int i = 1; i < buttons.length-1; i++) {
+			buttons[i].addActionListener(event);
+		}
+	}
 }

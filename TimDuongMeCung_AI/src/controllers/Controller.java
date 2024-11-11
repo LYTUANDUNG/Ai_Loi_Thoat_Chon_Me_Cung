@@ -1,8 +1,14 @@
 package controllers;
 
+import javax.swing.JButton;
+
+import models.ALFactory;
+import models.IAlogrithm;
 import models.IModel;
+import models.Model;
 import models.Point;
 import views.IView;
+import views.View;
 
 public class Controller implements IController {
 	IView view;
@@ -13,17 +19,12 @@ public class Controller implements IController {
 		this.model = model;
 
 	}
-	/**
-	 * event thực hiện các button 
-	 * 
-	 */
-	
+
 	/**
 	 * thực hiện tạo mê cung
 	 */
 	private void createMatrix() {
-		Point[] points = model.getMatrix();
-		view.createMatrix(points);
+		view.createMatrix(model.getMatrix());
 	}
 
 	/**
@@ -35,5 +36,40 @@ public class Controller implements IController {
 			view.displayResult(points, false);
 		else
 			view.displayResult(points, true);
+	}
+
+	@Override
+	public void setEvent() {
+		eventCreateMatrix();
+		eventChangeAL();
+		eventFinding();
+	}
+
+	private void eventFinding() {
+		View v = (View) view;
+		v.addEventFinding(e -> {
+			displayResult();
+		});
+	}
+
+	private void eventChangeAL() {
+		View v = (View) view;
+		v.addEventChangeAL(e -> {
+			String s = ((JButton) e.getSource()).getText();
+			IAlogrithm al = new ALFactory().createProduct(s);
+			((Model) model).setAL(al);
+		});
+	}
+
+	private void eventCreateMatrix() {
+		View v = (View) view;
+		v.addEventCreateMatrix(e -> {
+			createMatrix();
+		});
+	}
+
+	@Override
+	public void run() {
+		view.createGUI();
 	}
 }

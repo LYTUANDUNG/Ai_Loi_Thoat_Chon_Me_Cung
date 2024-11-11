@@ -6,9 +6,9 @@ public class MapView {
     private MatrixView matrixView;
     private RoadView roadView;
 
-    public MapView(MatrixView matrixView, RoadView roadView) {
-        this.matrixView = matrixView;
-        this.roadView = roadView;
+    public MapView() {
+        this.matrixView = new MatrixView();
+        this.roadView = new RoadView();
     }
 
     public void createMatrix(Point[] points) {
