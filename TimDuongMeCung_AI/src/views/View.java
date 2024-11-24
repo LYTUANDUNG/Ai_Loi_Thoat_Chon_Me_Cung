@@ -65,32 +65,31 @@ public class View implements IView {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(600, 400);
 
+		// Thiết lập layout cho frame
 		frame.setLayout(new BorderLayout());
 
-		// ToolView cho các nút chức năng
-		toolView = new ToolView();
+		// Khởi tạo ToolView cho các nút chức năng
+		ToolView toolView = new ToolView();
 
-		// Tạo panel cho ma trận
-		JPanel matrixPanel = new JPanel();
-		matrixPanel.setBackground(Color.LIGHT_GRAY);
-		matrixPanel.setPreferredSize(new Dimension(400, 200));
-		matrixPanel.add(new JLabel("Matrix sẽ được hiển thị ở đây."));
+		// Tạo MapView (nơi chứa MatrixView và RoadView)
+		MapView mapView = new MapView(); // Khởi tạo MapView
+
+		// Thêm MapView vào JFrame
+		frame.add(mapView, BorderLayout.CENTER); // Thêm mapView vào phần trung tâm của frame
 
 		// JTextArea để hiển thị kết quả
 		JTextArea textArea = new JTextArea(5, 40);
 		textArea.setText("Kết quả sẽ được hiển thị ở đây...");
-		textArea.setEditable(false); // Có thể chỉnh sửa
+		textArea.setEditable(false); // Không thể chỉnh sửa
 		JScrollPane scrollPane = new JScrollPane(textArea);
 
 		// Thêm các thành phần vào frame
 		frame.add(toolView, BorderLayout.WEST); // ToolView ở bên trái
-		frame.add(matrixPanel, BorderLayout.CENTER); // Matrix panel ở giữa
 		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới
 
 		// Hiển thị cửa sổ
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-
 
 }

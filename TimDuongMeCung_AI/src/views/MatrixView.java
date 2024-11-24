@@ -13,9 +13,11 @@ public class MatrixView extends JPanel {
 
 	// Phương thức để cập nhật ma trận
 	public void paintMatrix(Point[] points) {
-		this.points = points;
-		repaint(); // Yêu cầu vẽ lại giao diện
+	    System.out.println("Painting matrix...");  // Debugging
+	    this.points = points;
+	    repaint();  // Yêu cầu vẽ lại giao diện
 	}
+
 
 	@Override
 	protected void paintComponent(Graphics g) {

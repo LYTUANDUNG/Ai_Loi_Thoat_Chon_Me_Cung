@@ -13,7 +13,7 @@ public class ToolView extends JPanel {
     public ToolView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        String[] buttonNames = { "CREATE MATRIX", "PSO", "RUN" };
+        String[] buttonNames = { "CREATE MAZE", "PSO", "RUN" };
         buttons = new JButton[buttonNames.length];
 
         // Dùng Dimension để set form cho các button
