@@ -63,7 +63,6 @@ public class Controller implements IController {
 
 	private void eventCreateMatrix() {
 		View v = (View) view;
-
 		v.addEventCreateMatrix(e -> {
 			createMatrix();
 		});

@@ -17,11 +17,6 @@ public class View implements IView {
 	private MapView mapView;
 	private ToolView toolView;
 
-	public View() {
-		this.mapView = new MapView();
-		this.toolView = new ToolView();
-	}
-
 	/**
 	 * Sự kiện nút vẽ đường đi
 	 * 
@@ -45,7 +40,6 @@ public class View implements IView {
 	}
 
 	// Phương thức để tạo ma trận
-	@Override
 	public void createMatrix(Point[] points) {
 		mapView.createMatrix(points); // Truyền các điểm vào MapView để vẽ ma trận
 	}
@@ -55,38 +49,36 @@ public class View implements IView {
 		mapView.createRoad(points); // Truyền các điểm vào MapView để vẽ đường đi
 	}
 
-	@Override
 	// Phương thức để hiển thị kết quả
 	public void displayResult(Point[] points, boolean exist) {
 		// Xử lý và hiển thị kết quả
 	}
-	@Override
+
 	public void createGUI() {
 		// Tạo Frame chính
 		JFrame frame = new JFrame("Map View with Tools");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(600, 400);
 
-		// Thiết lập layout cho frame
 		frame.setLayout(new BorderLayout());
 
-		// Khởi tạo ToolView cho các nút chức năng
-		ToolView toolView = new ToolView();
+		// ToolView cho các nút chức năng
+		toolView = new ToolView();
 
-		// Tạo MapView (nơi chứa MatrixView và RoadView)
-		MapView mapView = new MapView(); // Khởi tạo MapView
-
-		// Thêm MapView vào JFrame
-		frame.add(mapView, BorderLayout.CENTER); // Thêm mapView vào phần trung tâm của frame
+		// Tạo panel cho ma trận
+		mapView = new MapView();
+		mapView.setBackground(Color.LIGHT_GRAY);
+		mapView.setPreferredSize(new Dimension(400, 200));
 
 		// JTextArea để hiển thị kết quả
 		JTextArea textArea = new JTextArea(5, 40);
 		textArea.setText("Kết quả sẽ được hiển thị ở đây...");
-		textArea.setEditable(false); // Không thể chỉnh sửa
+		textArea.setEditable(false); // Có thể chỉnh sửa
 		JScrollPane scrollPane = new JScrollPane(textArea);
 
 		// Thêm các thành phần vào frame
 		frame.add(toolView, BorderLayout.WEST); // ToolView ở bên trái
+		frame.add(mapView, BorderLayout.CENTER); // Matrix panel ở giữa
 		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới
 
 		// Hiển thị cửa sổ

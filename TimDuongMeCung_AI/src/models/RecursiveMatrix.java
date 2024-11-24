@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class RecursiveMatrix implements IAlogrithm {
-	private int size = 5;
+	private int size = 20;
 	private Random random = new Random();
 
 	@Override

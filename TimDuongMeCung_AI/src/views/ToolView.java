@@ -1,11 +1,11 @@
 package views;
 
-import javax.swing.*;
-
-import models.IAlogrithm;
-
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 public class ToolView extends JPanel {
     private JButton[] buttons;
