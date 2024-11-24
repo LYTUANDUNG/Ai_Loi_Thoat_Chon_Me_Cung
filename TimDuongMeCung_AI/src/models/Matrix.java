@@ -3,6 +3,9 @@ package models;
 public class Matrix {
 	// Adapter tạo ma trận
 	private IAdapter creating;
+	public Matrix() {
+		creating= new AdapterMatrix();
+	}
 
 	/*
 	 * Phương thức trả về ma trận dưới dạng mảng các điểm (Point) Thực hiện thông

@@ -30,4 +30,13 @@ public class Point {
 		return state;
 	}
 
+	public void setState(StatePoint state) {
+		this.state = state;
+	}
+
+	@Override
+	public String toString() {
+		return "Point [x=" + x + ", y=" + y + ", state=" + state + "]";
+	}
+
 }

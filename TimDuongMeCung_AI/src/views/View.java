@@ -45,6 +45,7 @@ public class View implements IView {
 	}
 
 	// Phương thức để tạo ma trận
+	@Override
 	public void createMatrix(Point[] points) {
 		mapView.createMatrix(points); // Truyền các điểm vào MapView để vẽ ma trận
 	}
@@ -54,11 +55,12 @@ public class View implements IView {
 		mapView.createRoad(points); // Truyền các điểm vào MapView để vẽ đường đi
 	}
 
+	@Override
 	// Phương thức để hiển thị kết quả
 	public void displayResult(Point[] points, boolean exist) {
 		// Xử lý và hiển thị kết quả
 	}
-
+	@Override
 	public void createGUI() {
 		// Tạo Frame chính
 		JFrame frame = new JFrame("Map View with Tools");
@@ -91,6 +93,5 @@ public class View implements IView {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-
 
 }
