@@ -19,12 +19,9 @@ public class Point {
 		return x;
 	}
 
-
 	public int getY() {
 		return y;
 	}
-
-
 
 	public StatePoint getState() {
 		return state;
@@ -34,9 +31,33 @@ public class Point {
 		this.state = state;
 	}
 
+	public boolean isWall() {
+		return this.state.equals(StatePoint.Wall);
+	}
+
+	public void setPassage() {
+		setState(StatePoint.Passage);
+	}
+
+	public void setWall() {
+		setState(StatePoint.Wall);
+	}
+
+	public void setExit() {
+		setState(StatePoint.Exit);
+	}
+
+	public void setEntrance() {
+		setState(StatePoint.Entrance);
+	}
+
 	@Override
 	public String toString() {
 		return "Point [x=" + x + ", y=" + y + ", state=" + state + "]";
+	}
+
+	public boolean isPassage() {
+		return this.state.equals(StatePoint.Passage);
 	}
 
 }
