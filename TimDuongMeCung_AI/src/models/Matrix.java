@@ -3,8 +3,16 @@ package models;
 public class Matrix {
 	// Adapter tạo ma trận
 	private IAdapter creating;
+	private int col;
+	private int row;
+
 	public Matrix() {
-		creating= new AdapterMatrix();
+		creating = new AdapterMatrix();
+	}
+
+	public void setSize(int width, int height) {
+		col = width;
+		row = height;
 	}
 
 	/*
@@ -12,7 +20,7 @@ public class Matrix {
 	 * qua adapter 'creating'
 	 */
 	public Point[] getMatrix(Point[] points) {
-		return creating.execute(points);
+		return creating.execute(points = new Point[col * row]);
 	}
 
 }

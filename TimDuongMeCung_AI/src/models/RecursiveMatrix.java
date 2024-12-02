@@ -1,76 +1,116 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
 public class RecursiveMatrix implements IAlogrithm {
-	private int size = 20;
-	private Random random = new Random();
+	private int row = 13;
+	private int col = 21;
+	private Point[] maze;
 
 	@Override
 	public Point[] execute(Point[] points) {
-		points = new Point[size * size];
-		init(points);
-		boolean[] visited = new boolean[points.length];
-		Point curP = null;
-		curP = points[getRandom(0, points.length)];
-		Stack<Point> stack = new Stack<Point>();
-		stack.push(curP);
-		while (!stack.isEmpty()) {
-			curP = stack.pop();
-			int index = getIndex(curP.getX(), curP.getY());
-			if (visited[index])
-				continue;
-			curP.setState(StatePoint.Passage);
-			visited[index] = true;
-			List<Integer> randomPoint = new ArrayList<>();
-			{
-//x
-				{
-					if (curP.getY() < size - 1)
-						randomPoint.add(getIndex(curP.getX(), curP.getY() + 1));
-					if (curP.getY() != 0)
-						randomPoint.add(getIndex(curP.getX(), curP.getY() - 1));
-				}
-//y
-				{
-					if (curP.getX() < size - 1)
-						randomPoint.add(getIndex(curP.getX() + 1, curP.getY()));
-					if (curP.getX() != 0)
-						randomPoint.add(getIndex(curP.getX() - 1, curP.getY()));
-				}
+		maze = new Point[row * col];
+		initMaze();
+		generateMaze();
+		ensureMultiplePaths();
+		setEntranceAndExit();
+		return maze;
+	}
+
+	private void initMaze() {
+		for (int i = 0; i < col; i++) {
+			for (int j = 0; j < row; j++) {
+				maze[getIndex(i, j)] = new Point(i, j, StatePoint.Wall);
 			}
-			while (!randomPoint.isEmpty()) {
-				int i = getRandom(0, randomPoint.size());
-				if (!visited[i])
-					stack.push(points[i]);
-				randomPoint.remove(i);
+		}
+
+	}
+
+	private void generateMaze() {
+		Stack<Point> stack = new Stack<Point>();
+		Point start = maze[0];
+		stack.push(start);
+		Point cur, next;
+		while (!stack.isEmpty()) {
+			cur = stack.peek();
+			next = getRandomNeighbor(cur);
+			if (next != null) {
+				next.setPassage();
+				removeWall(cur, next);
+				stack.push(next);
+			} else {
+				stack.pop();
 			}
 
 		}
 
-		return points;
+	}
+
+	private Point getRandomNeighbor(Point current) {
+		List<Integer> randomIndex = new ArrayList<>();
+		int index;
+		int x = current.getX();
+		int y = current.getY();
+		if (x > 1 && maze[index = getIndex(x - 2, y)].isWall())
+			randomIndex.add(index);
+		if (y > 1 && maze[index = getIndex(x, y - 2)].isWall())
+			randomIndex.add(index);
+		if (x < col - 2 && maze[index = getIndex(x + 2, y)].isWall())
+			randomIndex.add(index);
+		if (y < row - 2 && maze[index = getIndex(x, y + 2)].isWall())
+			randomIndex.add(index);
+		Collections.shuffle(randomIndex);
+		return randomIndex.isEmpty() ? null : maze[randomIndex.get(0)];
+	}
+
+	private void removeWall(Point current, Point next) {
+		int x = (current.getX() + next.getX()) / 2;
+		int y = (current.getY() + next.getY()) / 2;
+		maze[getIndex(x, y)].setPassage();
+
 	}
 
 	private int getIndex(int x, int y) {
-		return (x * size) + y;
+		return y * col + x;
+
 	}
 
-	private void init(Point[] points) {
-		int index = 0;
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				points[index++] = new Point(i, j, StatePoint.Wall);
+	private void ensureMultiplePaths() {
+		for (Point point : maze) {
+			if (point.isWall() && isBetweenPassages(point) && Math.random() < 0.075) {
+				point.setPassage();
 			}
 		}
+
 	}
 
-	private int getRandom(int min, int max) {
-		return random.nextInt(min, max);
+	private boolean isBetweenPassages(Point wall) {
+		int x = wall.getX();
+		int y = wall.getY();
+		if (x == 0 || x == col - 1 || y == 0 || y == row - 1)
+			return true;
+		boolean isBetweenX = maze[getIndex(x - 1, y)].isPassage() && maze[getIndex(x + 1, y)].isPassage();
+		boolean isBetweenY = maze[getIndex(x, y - 1)].isPassage() && maze[getIndex(x, y + 1)].isPassage();
+		return isBetweenX || isBetweenY;
 	}
 
-	
+	private void setEntranceAndExit() {
+		Random random = new Random();
+		Point entrance= maze[0], exit=maze[maze.length-1];
+
+//		do {
+//			entrance = maze[getIndex(0, random.nextInt(row))];
+//		} while (!entrance.isPassage());
+		entrance.setEntrance();
+//
+//		do {
+//			exit = maze[getIndex(col - 1, random.nextInt(row))];
+//		} while (!exit.isPassage());
+		exit.setExit();
+	}
 
 }
