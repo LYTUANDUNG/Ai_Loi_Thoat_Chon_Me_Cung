@@ -1,57 +1,59 @@
 package PSO;
 
+import java.util.Arrays;
+
 public class Vector {
-	private double x;
-	private double y;
-	private double value;
+	private int dimension;
+	private double[] pos;
+	private int value;
 
-	public Vector(double x, double y) {
-		this.x = x;
-		this.y = y;
+	public Vector(int dimension) {
+		this.dimension = dimension;
+		this.pos = new double[] { 0, 0 };
 	}
 
-	public double getX() {
-		return x;
+	public Vector(Vector that) {
+		this.pos = new double[] { that.pos[0], that.pos[1] };
+		this.value = that.value;
 	}
 
-	public void setX(double x) {
-		this.x = x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public void setY(double y) {
-		this.y = y;
-	}
-
-	public double getValue() {
-		return value;
-	}
-
-	public void setValue(double value) {
+	public Vector(double[] pos, int value) {
+		this.pos = pos;
 		this.value = value;
 	}
 
-	public Vector mul(double toMul) {
-		return new Vector(x * toMul, y * toMul);
+	public Vector(double[] pos) {
+		super();
+		this.pos = pos;
 	}
 
-	public Vector sub(Vector toSub) {
-		return new Vector(x - toSub.getX(), y - toSub.getY());
+	public double getDimensionValue(int dimension) {
+		return pos[dimension];
 	}
 
-	public Vector add(Vector toAdd) {
-		return new Vector(x + toAdd.getX(), y + toAdd.getY());
+	public void setDimensionValue(int dimension, double val) {
+		this.pos[dimension] = val;
 	}
 
-	public Vector mul(Vector toMul) {
-		return new Vector(x * toMul.getX(), y * toMul.getY());
+	public double[] getPos() {
+		return pos;
+	}
+
+	public void setPos(double[] pos) {
+		this.pos = pos;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "Vector [x=" + x + ", y=" + y + ", value=" + value + "]";
+		return "Vector [dimension=" + dimension + ", pos=" + Arrays.toString(pos) + ", value=" + value + "]";
 	}
+
 }

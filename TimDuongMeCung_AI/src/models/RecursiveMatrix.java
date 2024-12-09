@@ -7,8 +7,8 @@ import java.util.Random;
 import java.util.Stack;
 
 public class RecursiveMatrix implements IAlogrithm {
-	private int row = 5;
-	private int col = 6;
+	private int row = 23;
+	private int col = 31;
 	private Point[] maze;
 
 	@Override
