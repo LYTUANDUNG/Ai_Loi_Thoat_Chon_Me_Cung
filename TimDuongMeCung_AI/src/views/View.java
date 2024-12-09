@@ -41,17 +41,20 @@ public class View implements IView {
 
 	// Phương thức để tạo ma trận
 	public void createMatrix(Point[] points) {
-		mapView.createMatrix(points); // Truyền các điểm vào MapView để vẽ ma trận
+		mapView.setMaze(points); // Truyền các điểm vào MapView để vẽ ma trận
+		mapView.draw();
 	}
 
 	// Phương thức để tạo đường đi
 	public void createRoad(Point[] points) {
-		mapView.createRoad(points); // Truyền các điểm vào MapView để vẽ đường đi
+		mapView.setRoad(points); // Truyền các điểm vào MapView để vẽ đường đi
+		mapView.draw();
 	}
 
 	// Phương thức để hiển thị kết quả
 	public void displayResult(Point[] points, boolean exist) {
 		// Xử lý và hiển thị kết quả
+		if(exist) createRoad(points);
 	}
 
 	public void createGUI() {

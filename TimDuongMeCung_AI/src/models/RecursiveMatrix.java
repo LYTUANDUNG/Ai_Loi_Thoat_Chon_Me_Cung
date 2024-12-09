@@ -7,9 +7,8 @@ import java.util.Random;
 import java.util.Stack;
 
 public class RecursiveMatrix implements IAlogrithm {
-	private int row = 13;
-	private int col = 21;
-<<<<<<< HEAD
+	private int row = 5;
+	private int col = 6;
 	private Point[] maze;
 
 	@Override
@@ -19,16 +18,6 @@ public class RecursiveMatrix implements IAlogrithm {
 		generateMaze();
 		ensureMultiplePaths();
 		setEntranceAndExit();
-=======
-	private Point[] maze= new Point[row*col];
-
-	@Override
-	public Point[] execute(Point[] points) {
-		initMaze();
-		generateMaze();
-		ensureMultiplePaths();
-		setEntranceAndExit();		
->>>>>>> eb3eb5c802ee0d2d3e2464a08818783385b475ee
 		return maze;
 	}
 
@@ -59,33 +48,6 @@ public class RecursiveMatrix implements IAlogrithm {
 
 		}
 
-<<<<<<< HEAD
-	}
-
-	private Point getRandomNeighbor(Point current) {
-		List<Integer> randomIndex = new ArrayList<>();
-		int index;
-		int x = current.getX();
-		int y = current.getY();
-		if (x > 1 && maze[index = getIndex(x - 2, y)].isWall())
-			randomIndex.add(index);
-		if (y > 1 && maze[index = getIndex(x, y - 2)].isWall())
-			randomIndex.add(index);
-		if (x < col - 2 && maze[index = getIndex(x + 2, y)].isWall())
-			randomIndex.add(index);
-		if (y < row - 2 && maze[index = getIndex(x, y + 2)].isWall())
-			randomIndex.add(index);
-		Collections.shuffle(randomIndex);
-		return randomIndex.isEmpty() ? null : maze[randomIndex.get(0)];
-	}
-
-	private void removeWall(Point current, Point next) {
-		int x = (current.getX() + next.getX()) / 2;
-		int y = (current.getY() + next.getY()) / 2;
-		maze[getIndex(x, y)].setPassage();
-
-=======
->>>>>>> eb3eb5c802ee0d2d3e2464a08818783385b475ee
 	}
 
 	private Point getRandomNeighbor(Point current) {
@@ -111,14 +73,15 @@ public class RecursiveMatrix implements IAlogrithm {
 		maze[getIndex(x, y)].setPassage();
 
 	}
-/**
- * 0 1 2 3
- * 4 5 6 7
- * 
- * 1->0*4+1
- * 5->1*4+1
- * 
- */
+
+
+
+	/**
+	 * 0 1 2 3 4 5 6 7
+	 * 
+	 * 1->0*4+1 5->1*4+1
+	 * 
+	 */
 	private int getIndex(int x, int y) {
 		return y * col + x;
 
@@ -145,8 +108,7 @@ public class RecursiveMatrix implements IAlogrithm {
 
 	private void setEntranceAndExit() {
 		Random random = new Random();
-<<<<<<< HEAD
-		Point entrance= maze[0], exit=maze[maze.length-1];
+		Point entrance = maze[0], exit = maze[maze.length - 1];
 
 //		do {
 //			entrance = maze[getIndex(0, random.nextInt(row))];
@@ -156,20 +118,6 @@ public class RecursiveMatrix implements IAlogrithm {
 //		do {
 //			exit = maze[getIndex(col - 1, random.nextInt(row))];
 //		} while (!exit.isPassage());
-		exit.setExit();
-	}
-=======
-		Point entrance, exit;
->>>>>>> eb3eb5c802ee0d2d3e2464a08818783385b475ee
-
-		do {
-			entrance = maze[getIndex(0, random.nextInt(row))];
-		} while (!entrance.isPassage());
-		entrance.setEntrance();
-
-		do {
-			exit = maze[getIndex(col - 1, random.nextInt(row))];
-		} while (!exit.isPassage());
 		exit.setExit();
 	}
 

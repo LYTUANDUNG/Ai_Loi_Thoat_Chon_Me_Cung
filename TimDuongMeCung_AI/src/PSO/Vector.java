@@ -49,4 +49,9 @@ public class Vector {
 	public Vector mul(Vector toMul) {
 		return new Vector(x * toMul.getX(), y * toMul.getY());
 	}
+
+	@Override
+	public String toString() {
+		return "Vector [x=" + x + ", y=" + y + ", value=" + value + "]";
+	}
 }

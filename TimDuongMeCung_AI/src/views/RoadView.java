@@ -9,28 +9,33 @@ import models.Point;
 
 public class RoadView extends JPanel {
 
-    private Point[] points;
+	private Point[] points;
 
-    public void paintRoad(Point[] points) {
-        this.points = points;
-        repaint(); // Yêu cầu vẽ lại giao diện
-    }
+	public RoadView() {
+//		setOpaque(false); // Đặt trong suốt
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+	public void paintRoad(Point[] points) {
+		System.out.println("Painting road...");
+		this.points = points;
+		repaint(); // Yêu cầu vẽ lại giao diện
+	}
 
-        if (points != null) {
-            g.setColor(Color.BLUE);
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
-            // Vẽ từng điểm trong đường đi
-            for (Point point : points) {
-                int x = point.getX();
-                int y = point.getY();
+		if (points != null) {
+			g.setColor(Color.BLUE);
 
-                // hình tròn đại diện cho mỗi điểm trong đường đi
-                g.fillOval(x * 20, y * 20, 20, 20); 
-            }
-        }
-    }
+			// Vẽ từng điểm trong đường đi
+			for (Point point : points) {
+				int x = point.getX();
+				int y = point.getY();
+
+				// hình tròn đại diện cho mỗi điểm trong đường đi
+				g.fillOval(x * 20, y * 20, 20, 20);
+			}
+		}
+	}
 }
