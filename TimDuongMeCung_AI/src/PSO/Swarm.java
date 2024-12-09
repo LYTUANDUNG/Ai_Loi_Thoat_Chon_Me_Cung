@@ -9,7 +9,7 @@ public class Swarm {
 	private void init(Point[] maze) {
 		particles = new Particle[PSOConfig.PARTICLE_COUNT];
 		for (int i = 0; i < particles.length; i++) {
-			particles[i] = new Particle(maze);
+			particles[i] = new Particle(maze, 2);
 		}
 		particleBest = particles[0];
 		updateGBest();
@@ -18,9 +18,12 @@ public class Swarm {
 	public Point[] run(Point[] maze) {
 		init(maze);
 		boolean findGoal = false;
-		while (!findGoal) {
+		for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
+
 			for (Particle particle : particles) {
-				particle.update();
+				for (int j = 0; j < 2; j++) {
+					particle.update(j);
+				}
 			}
 			boolean isChange = false;
 			for (Particle particle : particles) {

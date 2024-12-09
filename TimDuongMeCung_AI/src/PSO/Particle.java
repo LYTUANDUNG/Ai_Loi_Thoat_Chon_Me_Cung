@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import models.PSO;
 import models.Point;
 
 public class Particle {
@@ -16,21 +15,24 @@ public class Particle {
 	private Vector gBest;
 	private FitnessDetails fitness;
 	private Vector goal;
+	private int dimension;
 
-	public Particle(Point[] maze) {
+	public Particle(Point[] maze, int dimension) {
 		this.maze = maze;
+		this.dimension = dimension;
 		fitness = new FitnessDetails();
-		position = new Vector(maze[0].getX(), maze[0].getY());
-		goal = new Vector(maze[maze.length - 1].getX(), maze[maze.length - 1].getY());
+		position = new Vector(dimension);
+		Point exit = maze[maze.length - 1];
+		goal = new Vector(new double[] { exit.getX(), exit.getY() });
 		position.setValue(objective(position));
 		pBest = position;
-		velocity = new Vector(PSOConfig.RANDOM.nextDouble(-0.5, 0.5), PSOConfig.RANDOM.nextDouble(-0.5, 0.5));
+		velocity = new Vector(new double[] { PSOConfig.RANDOM.nextDouble(), PSOConfig.RANDOM.nextDouble() });
 		path = new ArrayList<Point>();
 		path.add(maze[0]);
 	}
 
-	public void update() {
-		updateVel();
+	public void update(int dimension) {
+		updateVel(dimension);
 	}
 
 	public void updateGBest(Vector toUpdate) {
@@ -49,75 +51,71 @@ public class Particle {
 		}
 	}
 
-	private void updateVel() {
-		Vector inertia = velocity.mul(PSOConfig.INERTIA_WEIGHT);
-		Vector cognitive = pBest.sub(position).mul(PSOConfig.RANDOM.nextDouble() * PSOConfig.COGNITIVE_COEFFICIENT);
-		Vector social = gBest.sub(position).mul(PSOConfig.RANDOM.nextDouble() * PSOConfig.SOCIAL_COEFFICIENT);
-		velocity = inertia.add(cognitive).add(social);
-		updatePos();
+	private void updateVel(int dimension) {
+		double inertia = velocity.getDimensionValue(dimension) * PSOConfig.INERTIA_WEIGHT;
+		double cognitive = (pBest.getDimensionValue(dimension) - position.getDimensionValue(dimension))
+				* (PSOConfig.RANDOM.nextDouble() * PSOConfig.COGNITIVE_COEFFICIENT);
+		double social = (gBest.getDimensionValue(dimension) - position.getDimensionValue(dimension))
+				* (PSOConfig.RANDOM.nextDouble() * PSOConfig.SOCIAL_COEFFICIENT);
+		velocity.setDimensionValue(dimension, inertia + cognitive + social);
+		updatePos(dimension);
 	}
 
-	private void updatePos() {
-		Vector temp = position.add(velocity);
+	private void updatePos(int dimension) {
+		position.setDimensionValue(dimension, velocity.getDimensionValue(dimension));
 		Point tmp = new Point(path.getLast().getX(), path.getLast().getY());
-		nextStep(sigmoid(temp), tmp);
+		nextStep(sigmoid(position,dimension), tmp,dimension);
 		if (isValid(tmp)) {
 			path.add(tmp);
-			position = temp;
 		} else {
 			if (path.size() != 1) {
 				Point prev = path.get(path.size() - 2);
-				adjustVelocity(tmp, prev);
+				adjustVelocity(tmp, prev,dimension);
 			}
 		}
-		limitVelocity();
-		updatePBest(temp);
+		limitVelocity(dimension);
+		updatePBest(position);
 	}
 
-	private void limitVelocity() {
-		if (velocity.getX() > PSOConfig.MAX_VELOCITY.getX()) {
-			velocity.setX(PSOConfig.MAX_VELOCITY.getX());
-		} else if (velocity.getX() < PSOConfig.MIN_VELOCITY.getX()) {
-			velocity.setX(PSOConfig.MIN_VELOCITY.getX());
-		}
-
-		if (velocity.getY() > PSOConfig.MAX_VELOCITY.getY()) {
-			velocity.setY(PSOConfig.MAX_VELOCITY.getY());
-		} else if (velocity.getY() < PSOConfig.MIN_VELOCITY.getY()) {
-			velocity.setY(PSOConfig.MIN_VELOCITY.getY());
-		}
-	}
-0 0
-	private void adjustVelocity(Point tmp, Point prev) {
-		if (tmp.getX() - prev.getX() > 0) {
-			velocity.sub(new Vector(0,1));
-		} else {
-			velocity.sub(new Vector(0, -1));
-		}
-
-		if (tmp.getY() - prev.getY() > 0) {
-			velocity.sub(new Vector(0, 2));
-		} else {
-			velocity.sub(new Vector(0, -2));
+	private void limitVelocity(int dimension) {
+		if (velocity.getDimensionValue(dimension) > PSOConfig.MAX_VELOCITY) {
+			velocity.setDimensionValue(dimension, PSOConfig.MIN_VELOCITY);
+		} else if (velocity.getDimensionValue(dimension) < PSOConfig.MIN_VELOCITY) {
+			velocity.setDimensionValue(dimension, PSOConfig.MAX_VELOCITY);
 		}
 	}
 
-	private void nextStep(Point toAdd, Point curP) {
-		if (toAdd.getX() == 0 && toAdd.getY() == 0) {
-			curP.setX(curP.getX() - 1);
-		} else if (toAdd.getX() == 1 && toAdd.getY() == 1) {
-			curP.setX(curP.getX() + 1);
-		} else if (toAdd.getX() == 1 && toAdd.getY() == 0) {
-			curP.setY(curP.getY() - 1);
-		} else if (toAdd.getX() == 0 && toAdd.getY() == 1) {
-			curP.setY(curP.getX() + 1);
-		}
+	private void adjustVelocity(Point tmp, Point prev, int dimension) {
+		if (dimension == 0)
+			if (tmp.getX() - prev.getX() > 0) {
+				velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) - 1);
+			} else {
+				velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) + 1);
+			}
+		else if (dimension == 1)
+			if (tmp.getY() - prev.getY() > 0) {
+				velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) - 1);
+			} else {
+				velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) + 1);
+			}
 	}
 
-	private Point sigmoid(Vector vector) {
-		int nextX = (vector.getX() > 0) ? 1 : 0;
-		int nextY = (vector.getY() > 0) ? 1 : 0;
-		return new Point(nextX, nextY);
+	private void nextStep(int toAdd, Point curP, int dimension) {
+		if (dimension == 0)
+			if (toAdd == 0) {
+				curP.setX(curP.getX() - 1);
+			} else
+				curP.setX(curP.getX() + 1);
+		if (dimension == 1)
+			if (toAdd == 0) {
+				curP.setY(curP.getY() - 1);
+			} else
+				curP.setY(curP.getY() + 1);
+
+	}
+
+	private int sigmoid(Vector vector, int dimemsion) {
+		return (vector.getDimensionValue(dimemsion) > 0) ? 1 : 0;
 
 	}
 
