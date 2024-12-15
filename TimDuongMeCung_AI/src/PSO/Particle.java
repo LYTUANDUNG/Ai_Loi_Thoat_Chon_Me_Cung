@@ -1,38 +1,36 @@
 package PSO;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import models.Point;
 
 public class Particle {
 	private Point[] maze;
-	private Set<Point> historyPath;
+	private Map<Point, Integer> historyPath;
 	private List<Point> path;
 	private Vector position;
 	private Vector velocity;
 	private Vector pBest;
 	private Vector gBest;
 	private FitnessDetails fitness;
-	private Point goal;
 	private int dimension;
 
 	public Particle(Point[] maze, int dimension) {
-		historyPath = new HashSet<>();
+
+		historyPath = new HashMap<>();
 		this.maze = maze;
 		this.dimension = dimension;
 		fitness = new FitnessDetails(maze);
 		position = new Vector(dimension);
-		Point exit = maze[maze.length - 1];
-		goal = exit;
-		position.setValue(objective(maze[0]));
+		position.setValue(objective(MazeConfig.ENTRANCE));
 		pBest = new Vector(position);
 		velocity = new Vector(new double[] { PSOConfig.RANDOM.nextDouble(-2, 2), PSOConfig.RANDOM.nextDouble(-2, 2) });
 		path = new ArrayList<Point>();
-		path.add(maze[0]);
+		path.add(MazeConfig.ENTRANCE);
 	}
 
 	public void update(int dimension) {
@@ -42,14 +40,14 @@ public class Particle {
 	}
 
 	public void updateGBest(Vector toUpdate) {
-		gBest = new Vector(toUpdate);
+		gBest = toUpdate;
 	}
 
 	private int objective(Point p) {
-		return fitness.eval(p, goal);
+		return fitness.eval(p);
 	}
 
-	private void updatePBest(Vector v) {
+	public void updatePBest(Vector v) {
 		if (v.getValue() < pBest.getValue()) {
 			pBest = new Vector(v);
 		}
@@ -65,28 +63,46 @@ public class Particle {
 
 	}
 
+	public void step(Point point, int value, int dimension) {
+		if (dimension == 0)
+			point.setX(point.getX() + value);
+		else
+			point.setY(point.getY() + value);
+	}
+
 	private void updatePos(int dimension) {
-		position.setDimensionValue(dimension, velocity.getDimensionValue(dimension));
+		position.setDimensionValue(dimension,
+				position.getDimensionValue(dimension) + velocity.getDimensionValue(dimension));
 
 		Point tmp = new Point(path.getLast().getX(), path.getLast().getY());
 		int step = nextStep(sigmoid(position, dimension));
-		if (historyPath.contains(tmp)) {
-			step *= -1;
-			position.setValue(position.getValue()-5);
+		step(tmp, step, dimension);
+		Point prev=null;
+		if (path.size() != 1)
+			prev = path.get(path.size() - 2);
+		boolean contains = false;
+		if (historyPath.get(tmp) != null) {
+			historyPath.put(tmp, historyPath.get(tmp) + 1);
+			if (prev != null)
+				adjustVelocity(tmp,prev, dimension);
+			velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension)* 0.8);
+			contains = true;
 		}
-		if (dimension == 0)
-			tmp.setX(tmp.getX() + step);
-		else
-			tmp.setY(tmp.getY() + step);
 		if (isValid(tmp)) {
-			position.setValue(objective(tmp));
+			if (!contains) {
+				position.setValue(objective(tmp) - 1);
+				historyPath.put(tmp, 1);
+			} else
+				position.setValue(objective(tmp) + historyPath.get(tmp) + 5);
 			path.add(tmp);
 		} else {
 			if (path.size() != 1) {
-				historyPath.add(tmp);
+				if (!contains)
+					historyPath.put(tmp, 1);
+				else
+					historyPath.put(tmp, historyPath.get(tmp) + 1);
 				position.setValue(Integer.MAX_VALUE);
 				position.setDimensionValue(dimension, position.getDimensionValue(dimension) - 0.5);
-				Point prev = path.get(path.size() - 2);
 				adjustVelocity(tmp, prev, dimension);
 			}
 		}
@@ -95,26 +111,25 @@ public class Particle {
 	}
 
 	private void limitVelocity(int dimension) {
-	    double value = velocity.getDimensionValue(dimension);
-	    if (value > PSOConfig.MAX_VELOCITY) {
-	        velocity.setDimensionValue(dimension, PSOConfig.MAX_VELOCITY);
-	    } else if (value < PSOConfig.MIN_VELOCITY) {
-	        velocity.setDimensionValue(dimension, PSOConfig.MIN_VELOCITY);
-	    }
+		double value = velocity.getDimensionValue(dimension);
+		if (value > PSOConfig.MAX_VELOCITY) {
+			velocity.setDimensionValue(dimension, PSOConfig.MAX_VELOCITY);
+		} else if (value < PSOConfig.MIN_VELOCITY) {
+			velocity.setDimensionValue(dimension, PSOConfig.MIN_VELOCITY);
+		}
 	}
 
 	private void limitPos(int dimension) {
-	    double value = position.getDimensionValue(dimension);
-	    if (value > PSOConfig.MAX_POSITION) {
-	        position.setDimensionValue(dimension, PSOConfig.MAX_POSITION);
-	    } else if (value < PSOConfig.MIN_POSITION) {
-	        position.setDimensionValue(dimension, PSOConfig.MIN_POSITION);
-	    }
+		double value = position.getDimensionValue(dimension);
+		if (value > PSOConfig.MAX_POSITION) {
+			position.setDimensionValue(dimension, PSOConfig.MAX_POSITION);
+		} else if (value < PSOConfig.MIN_POSITION) {
+			position.setDimensionValue(dimension, PSOConfig.MIN_POSITION);
+		}
 	}
 
-
 	private void adjustVelocity(Point tmp, Point prev, int dimension) {
-		double adjustment = (tmp.getX() != prev.getX() || tmp.getY() != prev.getY()) ? -1.0 : 1.0;
+		double adjustment = (tmp.getX() != prev.getX() || tmp.getY() != prev.getY()) ? 1.0 : -1.0;
 		velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) + adjustment * 0.5);
 	}
 
@@ -150,7 +165,7 @@ public class Particle {
 			}
 			result.add(p);
 		}
-		return result;
+		return path;
 
 	}
 
@@ -158,12 +173,32 @@ public class Particle {
 		return pBest;
 	}
 
+	public void setpBest(Vector pBest) {
+		this.pBest = new Vector(pBest);
+	}
+
 	public Vector getgBest() {
 		return gBest;
 	}
 
+	public Vector getPosition() {
+		return position;
+	}
+
+	public Vector getVelocity() {
+		return velocity;
+	}
+
 	public boolean isGoal() {
-		return path.get(path.size() - 1).equals(goal);
+		return path.get(path.size() - 1).equals(MazeConfig.EXIT);
+	}
+
+	public List<Point> path() {
+		return this.path;
+	}
+
+	public void setPath(List<Point> path) {
+		this.path = path;
 	}
 
 }

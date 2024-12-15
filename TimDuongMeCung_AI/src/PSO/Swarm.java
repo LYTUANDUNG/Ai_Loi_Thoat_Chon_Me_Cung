@@ -1,6 +1,12 @@
 package PSO;
 
+import java.awt.Color;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import models.Point;
+import views.MapView;
 
 public class Swarm {
 	private Particle particleBest;
@@ -10,37 +16,45 @@ public class Swarm {
 		particles = new Particle[PSOConfig.PARTICLE_COUNT];
 		for (int i = 0; i < particles.length; i++) {
 			particles[i] = new Particle(maze, 2);
-			particles[i].updateGBest(particles[0].getpBest());
+			particles[i].updateGBest(particles[i].getpBest());
 		}
-		particleBest = particles[0];
+		particleBest = new Particle(maze, 0);
+		particleBest.setpBest(particles[0].getpBest());
 	}
 
-	public Point[] run(Point[] maze) {
+	public Point[] run(Point[] maze) throws IOException {
 		init(maze);
-		boolean findGoal = false;
 		run: for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
 			for (int j = 0; j < 2; j++) {
 				for (Particle particle : particles) {
 					particle.update(j);
-
+					if (particle.isGoal()) {
+						particleBest = particle;
+						break run;
+					}
 				}
 				boolean isChange = false;
 				for (Particle particle : particles) {
-					if (particleBest.getpBest().getValue() > particle.getpBest().getValue()) {
-						particleBest = particle;
+					if (particle.getpBest().getValue() < particleBest.getpBest().getValue()) {
+						particleBest.setpBest(particle.getpBest());
+						particleBest.setPath(particle.path());
 						isChange = true;
+						if (particleBest.isGoal()) {
+							break run;
+						}
 					}
 				}
-				if (particleBest.isGoal()) {
-					findGoal = true;
-				}
-				if (isChange)
+				if (isChange) {
 					updateGBest();
-				if (findGoal)
-					break run;
+				}
 			}
-//			adjustPSOParameters();
 		}
+		Map<Point[], Color> poins = new HashMap<>();
+		for (Particle p : particles) {
+			poins.put(p.getPath().toArray(new Point[0]), Color.blue);
+		}
+		poins.put(particleBest.getPath().toArray(new Point[0]), Color.red);
+		MapView.roads = poins;
 		return particleBest.getPath().toArray(new Point[0]);
 	}
 
@@ -49,9 +63,5 @@ public class Swarm {
 			particle.updateGBest(particleBest.getpBest());
 		}
 	}
-	private void adjustPSOParameters() {
-	    PSOConfig.INERTIA_WEIGHT *= 0.9;
-	    PSOConfig.COGNITIVE_COEFFICIENT += 0.1;
-	    PSOConfig.SOCIAL_COEFFICIENT += 0.1;
-	}
+
 }

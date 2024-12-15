@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
+import PSO.MazeConfig;
+
 public class RecursiveMatrix implements IAlogrithm {
-	private int row = 23;
-	private int col = 31;
+	private int row = MazeConfig.ROW;
+	private int col = MazeConfig.COLUMN;
 	private Point[] maze;
 
 	@Override
@@ -74,8 +76,6 @@ public class RecursiveMatrix implements IAlogrithm {
 
 	}
 
-
-
 	/**
 	 * 0 1 2 3 4 5 6 7
 	 * 
@@ -108,17 +108,18 @@ public class RecursiveMatrix implements IAlogrithm {
 
 	private void setEntranceAndExit() {
 		Random random = new Random();
-		Point entrance = maze[0], exit = maze[maze.length - 1];
+		Point entrance, exit;
 
-//		do {
-//			entrance = maze[getIndex(0, random.nextInt(row))];
-//		} while (!entrance.isPassage());
+		do {
+			entrance = maze[getIndex(0, random.nextInt(row))];
+		} while (!entrance.isPassage());
 		entrance.setEntrance();
-//
-//		do {
-//			exit = maze[getIndex(col - 1, random.nextInt(row))];
-//		} while (!exit.isPassage());
+		MazeConfig.ENTRANCE = entrance;
+		do {
+			exit = maze[getIndex(col - 1, random.nextInt(row))];
+		} while (!exit.isPassage());
 		exit.setExit();
+		MazeConfig.EXIT = exit;
 	}
 
 }

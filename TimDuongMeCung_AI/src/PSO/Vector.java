@@ -9,7 +9,7 @@ public class Vector {
 
 	public Vector(int dimension) {
 		this.dimension = dimension;
-		this.pos = new double[] { 0, 0 };
+		this.pos = new double[] { Math.random(), Math.random()};
 	}
 
 	public Vector(Vector that) {
