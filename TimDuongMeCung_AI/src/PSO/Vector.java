@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class Vector {
 	private int dimension;
 	private double[] pos;
+
 	private int value;
 
 	public Vector(int dimension) {

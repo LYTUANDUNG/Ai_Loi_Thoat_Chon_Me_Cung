@@ -35,8 +35,10 @@ public class Particle {
 
 	public void update(int dimension) {
 		updateVel(dimension);
+
 		updatePos(dimension);
 		updatePBest(position);
+
 	}
 
 	public void updateGBest(Vector toUpdate) {
@@ -77,17 +79,18 @@ public class Particle {
 		Point tmp = new Point(path.getLast().getX(), path.getLast().getY());
 		int step = nextStep(sigmoid(position, dimension));
 		step(tmp, step, dimension);
-		Point prev=null;
+		Point prev = null;
 		if (path.size() != 1)
 			prev = path.get(path.size() - 2);
 		boolean contains = false;
 		if (historyPath.get(tmp) != null) {
 			historyPath.put(tmp, historyPath.get(tmp) + 1);
 			if (prev != null)
-				adjustVelocity(tmp,prev, dimension);
-			velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension)* 0.8);
+				adjustVelocity(tmp, prev, dimension);
+			velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) * 0.8);
 			contains = true;
 		}
+
 		if (isValid(tmp)) {
 			if (!contains) {
 				position.setValue(objective(tmp) - 1);

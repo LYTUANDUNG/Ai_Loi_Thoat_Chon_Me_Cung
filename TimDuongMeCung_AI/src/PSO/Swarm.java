@@ -16,7 +16,9 @@ public class Swarm {
 		particles = new Particle[PSOConfig.PARTICLE_COUNT];
 		for (int i = 0; i < particles.length; i++) {
 			particles[i] = new Particle(maze, 2);
+
 			particles[i].updateGBest(particles[i].getpBest());
+
 		}
 		particleBest = new Particle(maze, 0);
 		particleBest.setpBest(particles[0].getpBest());
@@ -24,6 +26,7 @@ public class Swarm {
 
 	public Point[] run(Point[] maze) throws IOException {
 		init(maze);
+
 		run: for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
 			for (int j = 0; j < 2; j++) {
 				for (Particle particle : particles) {

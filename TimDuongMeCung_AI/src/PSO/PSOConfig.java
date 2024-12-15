@@ -3,6 +3,7 @@ package PSO;
 import java.util.Random;
 
 public class PSOConfig {
+
 	public static double INERTIA_WEIGHT = 0.7;
 	public static  double COGNITIVE_COEFFICIENT =2;
 	public static  double SOCIAL_COEFFICIENT =2;

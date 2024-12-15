@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
 import models.Point;
 
 public class FitnessDetails {
@@ -74,6 +75,7 @@ public class FitnessDetails {
 
 	public int eval(Point p) {
 		return checkPoint(p) + getLevelWaves(p);
+
 	}
 
 }
