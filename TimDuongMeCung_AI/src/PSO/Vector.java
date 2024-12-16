@@ -53,6 +53,26 @@ public class Vector {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(pos);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vector other = (Vector) obj;
+		return Arrays.equals(pos, other.pos);
+	}
+
+	@Override
 	public String toString() {
 		return "Vector [dimension=" + dimension + ", pos=" + Arrays.toString(pos) + ", value=" + value + "]";
 	}

@@ -57,16 +57,16 @@ public class FitnessDetails {
 		int sum = 0;
 		if (MazeConfig.EXIT.equals(p))
 			return 0;
-		if (p.getX() == col - 1 || maze[getIndex(p.getX() + 1, p.getY())].isWall()) {
+		if (p.getX() >= col - 1 || maze[getIndex(p.getX() + 1, p.getY())].isWall()) {
 			sum += 1;
 		}
-		if (p.getX() == 0 || maze[getIndex(p.getX() - 1, p.getY())].isWall()) {
+		if (p.getX() <= 0 || maze[getIndex(p.getX() - 1, p.getY())].isWall()) {
 			sum += 1;
 		}
-		if (p.getY() == row - 1 || maze[getIndex(p.getX(), p.getY() + 1)].isWall()) {
+		if (p.getY() >= row - 1 || maze[getIndex(p.getX(), p.getY() + 1)].isWall()) {
 			sum += 1;
 		}
-		if (p.getY() == 0 || maze[getIndex(p.getX(), p.getY() - 1)].isWall()) {
+		if (p.getY() <= 0 || maze[getIndex(p.getX(), p.getY() - 1)].isWall()) {
 			sum += 1;
 		}
 
