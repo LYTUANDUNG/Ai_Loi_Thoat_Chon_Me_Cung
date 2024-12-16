@@ -29,18 +29,15 @@ public class Swarm {
 
 	public Point[] run(Point[] maze) throws IOException {
 		init(maze);
-		boolean findGoal = false;
-		run: for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
+		for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
 			for (int j = 0; j < 2; j++) {
 				for (Particle particle : particles) {
 					particle.update(j, gBest);
 					if (particle.isGoal()) {
 						particleBest = particle;
-						findGoal = true;
-					}
-					if (findGoal) {
-						System.out.println(1);
-						break run;
+						j = 3;
+						i = PSOConfig.MAX_ITERATIONS;
+						break;
 					}
 				}
 			}

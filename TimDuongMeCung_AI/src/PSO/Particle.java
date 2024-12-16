@@ -20,15 +20,19 @@ public class Particle {
 
 	public Particle(Point[] maze, int dimension, Swarm swarm) {
 		this.swarm = swarm;
-		historyPath = new HashMap<>();
 		this.maze = maze;
 		fitness = new FitnessDetails(maze);
+		init(dimension);
+	}
+
+	private void init(int dimension) {
+		historyPath = new HashMap<>();
+		path = new ArrayList<Point>();
+		velocity = new Vector(new double[] { PSOConfig.RANDOM.nextDouble(-3, 3), PSOConfig.RANDOM.nextDouble(-3, 3) });
+		path.add(MazeConfig.ENTRANCE);
 		position = new Vector(dimension);
 		position.setValue(objective(MazeConfig.ENTRANCE));
 		pBest = new Vector(position);
-		velocity = new Vector(new double[] { PSOConfig.RANDOM.nextDouble(-3, 3), PSOConfig.RANDOM.nextDouble(-3, 3) });
-		path = new ArrayList<Point>();
-		path.add(MazeConfig.ENTRANCE);
 	}
 
 	public void update(int dimension, Vector gBest) {
@@ -72,75 +76,48 @@ public class Particle {
 		position.setDimensionValue(dimension,
 				position.getDimensionValue(dimension) + velocity.getDimensionValue(dimension));
 		Point tmp = new Point(path.getLast().getX(), path.getLast().getY());
-		int step = nextStep(sigmoid(position, dimension));
-		step(tmp, step, dimension);
-		Point prev = null;
-		if (path.size() != 1)
-			prev = path.get(path.size() - 2);
-		boolean contains = false;
-		Integer times = historyPath.get(tmp);
-		if (times != null) {
-			historyPath.put(tmp, times + 1);
-			if (prev != null)
-				adjustVelocity(tmp, prev, dimension);
-			velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) * 0.8);
-			contains = true;
-			if (times > 4) {
-				// Tìm vị trí mới chưa từng ghé thăm hoặc ghé thăm dưới 4 lần
-				tmp = findAlternativePoint(path.getLast());
-				if (tmp == null) {
-					// Nếu không tìm được điểm phù hợp, random lại velocity để thoát khỏi bẫy
-					resetVelocity(dimension);
-					return;
-				}
-			}
-		}
-		times = historyPath.get(tmp);
-		contains = times != null;
+		Point last = path.getLast();
+		findOptimalPoint(tmp, dimension);
+		int times = historyPath.getOrDefault(tmp, 0);
 		if (isValid(tmp)) {
-			if (!contains) {
-				position.setValue(objective(tmp) - 1);
-				historyPath.put(tmp, 1);
-			} else {
-				position.setValue(objective(tmp) + times + 5);
-			}
+			position.setValue(objective(tmp) + times - 1);
+			historyPath.put(tmp, ++times);
 			path.add(tmp);
 		} else {
 			if (path.size() != 1) {
-				if (!contains)
-					historyPath.put(tmp, 1);
-				else
-					historyPath.put(tmp, historyPath.get(tmp) + 1);
+				historyPath.put(tmp, ++times);
 				position.setValue(Integer.MAX_VALUE);
 				position.setDimensionValue(dimension, position.getDimensionValue(dimension) - 0.5);
-				adjustVelocity(tmp, prev, dimension);
+				adjustVelOnCollision(tmp, last, dimension);
 			}
 		}
 		limitPos(dimension);
 		limitVelocity(dimension);
 	}
 
-	private void resetVelocity(int dimension) {
-		velocity = new Vector(new double[] { PSOConfig.RANDOM.nextDouble(-3, 3), PSOConfig.RANDOM.nextDouble(-3, 3) });
-		position.setDimensionValue(dimension,
-				position.getDimensionValue(dimension) + velocity.getDimensionValue(dimension));
+	public void changeDirection(int dimension, int change) {
+		velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) * change);
+		position.setDimensionValue(dimension, position.getDimensionValue(dimension) * change);
 	}
 
-	private Point findAlternativePoint(Point current) {
-		for (int dx = -1; dx <= 1; dx++) {
-			for (int dy = -1; dy <= 1; dy++) {
-				if (dx == 0 && dy == 0)
-					continue; // Bỏ qua chính nó
-				Point candidate = new Point(current.getX() + dx, current.getY() + dy);
-				if (isValid(candidate)) {
-					Integer times = historyPath.get(candidate);
-					if (times == null || times < 4) {
-						return candidate;
-					}
-				}
+	private Point findOptimalPoint(Point current, int dimension) {
+		int bestStep = 0;
+		Integer min = Integer.MAX_VALUE;
+		int step = nextStep(sigmoid(position, dimension));
+		int change = 1;
+		for (int i = 0; i < 2; i++) {
+			step(current, step * change, dimension);
+			int val = historyPath.getOrDefault(current, 0) + (isValid(current) ? objective(current) : 20);
+			if (val < min) {
+				min = val;
+				bestStep = step * change;
 			}
+			step(current, -step * change, dimension);
+			change = -1;
 		}
-		return null; // Không tìm thấy vị trí phù hợp
+		step(current, bestStep, dimension);
+		changeDirection(dimension, bestStep);
+		return current;
 	}
 
 	private void limitVelocity(int dimension) {
@@ -161,7 +138,7 @@ public class Particle {
 		}
 	}
 
-	private void adjustVelocity(Point tmp, Point prev, int dimension) {
+	private void adjustVelOnCollision(Point tmp, Point prev, int dimension) {
 		double adjustment = (tmp.getX() != prev.getX() || tmp.getY() != prev.getY()) ? 1.0 : -1.0;
 		velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) + adjustment * 0.5);
 	}
@@ -198,7 +175,7 @@ public class Particle {
 			}
 			result.add(p);
 		}
-		return path;
+		return result;
 
 	}
 

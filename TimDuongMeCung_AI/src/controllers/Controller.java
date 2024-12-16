@@ -2,6 +2,7 @@ package controllers;
 
 import javax.swing.JButton;
 
+import PSO.MazeConfig;
 import models.ALFactory;
 import models.IAlogrithm;
 import models.IModel;
@@ -32,7 +33,7 @@ public class Controller implements IController {
 	 */
 	private void displayResult() {
 		Point[] points = model.getPath();
-		if (points == null)
+		if (!MazeConfig.EXIT.equals(points[points.length - 1]))
 			view.displayResult(points, false);
 		else
 			view.displayResult(points, true);

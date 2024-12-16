@@ -34,7 +34,6 @@ public class FitnessDetails {
 			// Thêm tập hợp điểm vào waves
 			this.waves.put(points, i);
 		}
-
 	}
 
 	private int getIndex(int x, int y) {

@@ -6,9 +6,11 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 public class ToolView extends JPanel {
     private JButton[] buttons;
+    private JTextArea textArea; // Add a reference to JTextArea
 
     public ToolView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -27,17 +29,27 @@ public class ToolView extends JPanel {
         }
     }
 
-	public void addEventFinding(ActionListener event) {
-		buttons[buttons.length-1].addActionListener(event);
-	}
+    // Add a setter for the textArea
+    public void setTextArea(JTextArea textArea) {
+        this.textArea = textArea;
+    }
 
-	public void addEventCreateMatrix(ActionListener event) {
-		buttons[0].addActionListener(event);
-	}
+    // Method to retrieve the textArea
+    public JTextArea getTextArea() {
+        return textArea;
+    }
 
-	public void addEventChangeAL(ActionListener event) {
-		for (int i = 1; i < buttons.length-1; i++) {
-			buttons[i].addActionListener(event);
-		}
-	}
+    public void addEventFinding(ActionListener event) {
+        buttons[buttons.length-1].addActionListener(event);
+    }
+
+    public void addEventCreateMatrix(ActionListener event) {
+        buttons[0].addActionListener(event);
+    }
+
+    public void addEventChangeAL(ActionListener event) {
+        for (int i = 1; i < buttons.length-1; i++) {
+            buttons[i].addActionListener(event);
+        }
+    }
 }

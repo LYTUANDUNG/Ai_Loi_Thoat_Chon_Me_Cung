@@ -53,8 +53,13 @@ public class View implements IView {
 
 	// Phương thức để hiển thị kết quả
 	public void displayResult(Point[] points, boolean exist) {
-		// Xử lý và hiển thị kết quả
-		if(exist) createRoad(points);
+		JTextArea textArea = toolView.getTextArea(); // Get the JTextArea from ToolView to update results
+		createRoad(points);
+		if (exist) {
+			textArea.setText("Path found!");
+		} else {
+			textArea.setText("No path found.");
+		}
 	}
 
 	public void createGUI() {
@@ -76,17 +81,17 @@ public class View implements IView {
 		// JTextArea để hiển thị kết quả
 		JTextArea textArea = new JTextArea(5, 40);
 		textArea.setText("Kết quả sẽ được hiển thị ở đây...");
-		textArea.setEditable(false); // Có thể chỉnh sửa
+		textArea.setEditable(false); // Không thể chỉnh sửa
 		JScrollPane scrollPane = new JScrollPane(textArea);
+
+		// Add the textArea to the ToolView for easy access
+		toolView.setTextArea(textArea);
 
 		// Thêm các thành phần vào frame
 		frame.add(toolView, BorderLayout.WEST); // ToolView ở bên trái
 		frame.add(mapView, BorderLayout.CENTER); // Matrix panel ở giữa
-		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới
-
-		// Hiển thị cửa sổ
+		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới// Hiển thị cửa sổ
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-
 }

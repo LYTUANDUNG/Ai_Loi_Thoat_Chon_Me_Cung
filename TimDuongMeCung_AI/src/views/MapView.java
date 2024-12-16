@@ -11,7 +11,8 @@ import models.Point;
 public class MapView extends JPanel {
 	private Point[] maze;
 	private Point[] road;
-	public static Map<Point[],Color> roads;
+	boolean drawAll = false;
+	public static Map<Point[], Color> roads;
 	int current;
 
 	public void setMaze(Point[] maze) {
@@ -29,7 +30,7 @@ public class MapView extends JPanel {
 		if (roads != null)
 			for (Map.Entry<Point[], Color> entry : roads.entrySet()) {
 				Point[] key = entry.getKey();
-				max=Math.max(max, key.length);
+				max = Math.max(max, key.length);
 			}
 		drawRoad(max);
 	}
@@ -64,17 +65,27 @@ public class MapView extends JPanel {
 			}
 		}
 		if (roads != null) {
-			for (Map.Entry<Point[], Color> entry : roads.entrySet()) {
-				g.setColor(entry.getValue());
-				Point[] key = entry.getKey();
-				if (current < key.length) {
-					Point point = key[current];
+			if (drawAll)
+				for (Map.Entry<Point[], Color> entry : roads.entrySet()) {
+					g.setColor(entry.getValue());
+					Point[] key = entry.getKey();
+					if (current < key.length) {
+						Point point = key[current];
+						int x = point.getX();
+						int y = point.getY();
+						// hình tròn đại diện cho mỗi điểm trong đường đi
+						g.fillOval(x * 20, y * 20, 20, 20);
+					}
+				}
+			else if (road != null) {
+				g.setColor(Color.blue);
+				for (Point point : road) {
 					int x = point.getX();
 					int y = point.getY();
 					// hình tròn đại diện cho mỗi điểm trong đường đi
 					g.fillOval(x * 20, y * 20, 20, 20);
 				}
-		}
+			}
 
 		}
 
@@ -87,7 +98,7 @@ public class MapView extends JPanel {
 					current++;
 					repaint();
 					try {
-						Thread.sleep(200);
+						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
