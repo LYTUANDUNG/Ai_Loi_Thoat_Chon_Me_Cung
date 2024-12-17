@@ -8,7 +8,7 @@ public class PSOConfig {
 	public static double COGNITIVE_COEFFICIENT =2;
 	public static double SOCIAL_COEFFICIENT =2;
 	public static final int PARTICLE_COUNT = 100;
-	public static final int MAX_ITERATIONS = 1400;
+	public static final int MAX_ITERATIONS = 2000;
 	public static final double MAX_VELOCITY =4;
 	public static final double MIN_VELOCITY =-4;
 	public static final double MAX_POSITION =4;

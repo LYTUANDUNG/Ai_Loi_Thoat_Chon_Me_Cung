@@ -61,6 +61,11 @@ public class View implements IView {
 			textArea.setText("No path found.");
 		}
 	}
+	public void change() {
+		toolView.addEventChange(e->{
+			mapView.setDrawAll();
+		});
+	}
 
 	public void createGUI() {
 		// Tạo Frame chính
@@ -93,5 +98,6 @@ public class View implements IView {
 		frame.add(scrollPane, BorderLayout.SOUTH); // JTextArea ở dưới// Hiển thị cửa sổ
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		change();
 	}
 }

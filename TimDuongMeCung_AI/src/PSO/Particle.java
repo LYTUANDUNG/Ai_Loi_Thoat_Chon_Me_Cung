@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import models.PSO;
 import models.Point;
 
 public class Particle {
@@ -77,7 +78,7 @@ public class Particle {
 				position.getDimensionValue(dimension) + velocity.getDimensionValue(dimension));
 		Point tmp = new Point(path.getLast().getX(), path.getLast().getY());
 		Point last = path.getLast();
-		findOptimalPoint(tmp, dimension);
+		tmp = findOptimalPoint(tmp, dimension);
 		int times = historyPath.getOrDefault(tmp, 0);
 		if (isValid(tmp)) {
 			position.setValue(objective(tmp) + times - 1);
@@ -95,28 +96,42 @@ public class Particle {
 		limitVelocity(dimension);
 	}
 
-	public void changeDirection(int dimension, int change) {
-		velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) * change);
-		position.setDimensionValue(dimension, position.getDimensionValue(dimension) * change);
+	public void changeDirection(int dimension, int change, boolean repeat) {
+		if (repeat) {
+			velocity.setDimensionValue(dimension, velocity.getDimensionValue(dimension) * change);
+			position.setDimensionValue(dimension, position.getDimensionValue(dimension) * change);
+		} else {
+			velocity.setDimensionValue(dimension,
+					velocity.getDimensionValue(dimension) + PSOConfig.RANDOM.nextDouble(0, PSOConfig.MAX_VELOCITY) * change);
+			position.setDimensionValue(dimension,
+					position.getDimensionValue(dimension) + PSOConfig.RANDOM.nextDouble(0, PSOConfig.MAX_POSITION) * change);
+		}
 	}
 
 	private Point findOptimalPoint(Point current, int dimension) {
+		Point temp = new Point(current.getX(), current.getY());
 		int bestStep = 0;
 		Integer min = Integer.MAX_VALUE;
 		int step = nextStep(sigmoid(position, dimension));
 		int change = 1;
 		for (int i = 0; i < 2; i++) {
-			step(current, step * change, dimension);
-			int val = historyPath.getOrDefault(current, 0) + (isValid(current) ? objective(current) : 20);
+			step(temp, step * change, dimension);
+			int val = historyPath.getOrDefault(temp, 0) + (isValid(temp) ? objective(temp) : 20);
 			if (val < min) {
 				min = val;
 				bestStep = step * change;
 			}
-			step(current, -step * change, dimension);
+			step(temp, -step * change, dimension);
 			change = -1;
 		}
-		step(current, bestStep, dimension);
-		changeDirection(dimension, bestStep);
+		step(temp, step, dimension);
+		if (historyPath.getOrDefault(temp, 0) > 3) {
+			changeDirection(dimension, bestStep, true);
+			step = bestStep;
+		} else {
+			changeDirection(dimension, bestStep == step ? step : bestStep, false);
+		}
+		step(current, step, dimension);
 		return current;
 	}
 
@@ -175,7 +190,7 @@ public class Particle {
 			}
 			result.add(p);
 		}
-		return result;
+		return path;
 
 	}
 

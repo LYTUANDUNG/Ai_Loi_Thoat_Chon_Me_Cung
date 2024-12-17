@@ -11,7 +11,7 @@ import models.Point;
 public class MapView extends JPanel {
 	private Point[] maze;
 	private Point[] road;
-	boolean drawAll = false;
+	boolean drawAll = true;
 	public static Map<Point[], Color> roads;
 	int current;
 
@@ -33,6 +33,10 @@ public class MapView extends JPanel {
 				max = Math.max(max, key.length);
 			}
 		drawRoad(max);
+	}
+
+	public void setDrawAll() {
+		this.drawAll = !drawAll;
 	}
 
 	@Override

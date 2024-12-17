@@ -27,7 +27,7 @@ public class Swarm {
 		gBest = particleBest.getpBest();
 	}
 
-	public Point[] run(Point[] maze) throws IOException {
+	public Point[] run(Point[] maze) {
 		init(maze);
 		for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
 			for (int j = 0; j < 2; j++) {
