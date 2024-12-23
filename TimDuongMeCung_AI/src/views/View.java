@@ -5,13 +5,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 
-import models.Point;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import models.Point;
 
 public class View implements IView {
 	private MapView mapView;

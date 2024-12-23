@@ -32,7 +32,7 @@ public class Swarm {
 		for (int i = 0; i < PSOConfig.MAX_ITERATIONS; i++) {
 			for (int j = 0; j < 2; j++) {
 				for (Particle particle : particles) {
-					particle.update(j, gBest);
+					particle.updateParticle(j, gBest);
 					if (particle.isGoal()) {
 						particleBest = particle;
 						j = 3;
